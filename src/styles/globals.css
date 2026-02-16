@@ -1,55 +1,4 @@
-:root {
-  /* Brand Colors */
-  --color-primary: #D90429;
-  /* Red */
-  --color-secondary: #FFD700;
-  /* Gold */
-  --color-accent: #EF233C;
-  --color-background: #0f0f1b;
-
-  /* Glassmorphism */
-  --glass-bg: rgba(255, 255, 255, 0.05);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  --glass-blur: 10px;
-
-  /* Text Colors */
-  --text-main: #ffffff;
-  --text-muted: rgba(255, 255, 255, 0.7);
-
-  /* Spacing */
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 2rem;
-
-  /* Font */
-  --font-main: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  font-family: var(--font-main);
-  background-color: var(-color-background);
-  background: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0f0f1b 100%);
-  color: var(--text-main);
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-/* Utility Class for Glassmorphism */
-.glass-panel {
-  background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-  border-radius: 16px;
-}
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @layer base {
   :root {
@@ -72,9 +21,11 @@ body {
   }
 
   body {
-    @apply text-white min-h-screen overflow-x-hidden;
     background: radial-gradient(circle at 50% 10%, #800000, #4a0404, #2b0202);
     font-family: 'Montserrat', sans-serif;
+    color: white;
+    min-height: 100vh;
+    overflow-x: hidden;
   }
 
   h1,
@@ -104,6 +55,7 @@ body {
   .text-gold-premium {
     background: linear-gradient(to bottom, #FFD700, #FDB931, #9E7903, #FDB931, #FFD700);
     -webkit-background-clip: text;
+    background-clip: text;
     color: transparent;
     text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
     font-weight: 700;
@@ -117,7 +69,19 @@ body {
       -5px -5px 10px #ff3333;
     border: none;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    @apply rounded-xl font-bold uppercase tracking-wider text-yellow-100 flex items-center justify-center;
+    border-radius: 0.75rem;
+    /* rounded-xl */
+    font-weight: 700;
+    /* font-bold */
+    text-transform: uppercase;
+    /* uppercase */
+    letter-spacing: 0.05em;
+    /* tracking-wider */
+    color: #FEF3C7;
+    /* text-yellow-100 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .btn-neumorphic:active {
@@ -198,6 +162,25 @@ body {
       clip: rect(61px, 9999px, 34px, 0);
     }
   }
+
+  /* Animations */
+  @keyframes float {
+    0% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(-20px);
+    }
+
+    100% {
+      transform: translateY(0px);
+    }
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
 }
 
 /* Scrollbar */
@@ -216,23 +199,4 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
-}
-
-/* Animations */
-@keyframes float {
-  0% {
-    transform: translateY(0px);
-  }
-
-  50% {
-    transform: translateY(-20px);
-  }
-
-  100% {
-    transform: translateY(0px);
-  }
-}
-
-.animate-float {
-  animation: float 6s ease-in-out infinite;
 }
