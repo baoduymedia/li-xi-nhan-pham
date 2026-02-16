@@ -1,10 +1,12 @@
 :root {
   /* Brand Colors */
-  --color-primary: #D90429; /* Red */
-  --color-secondary: #FFD700; /* Gold */
+  --color-primary: #D90429;
+  /* Red */
+  --color-secondary: #FFD700;
+  /* Gold */
   --color-accent: #EF233C;
   --color-background: #0f0f1b;
-  
+
   /* Glassmorphism */
   --glass-bg: rgba(255, 255, 255, 0.05);
   --glass-border: rgba(255, 255, 255, 0.1);
@@ -19,7 +21,7 @@
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
   --spacing-lg: 2rem;
-  
+
   /* Font */
   --font-main: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
@@ -45,29 +47,79 @@ body {
   border-radius: 16px;
 }
 
-.glass-btn {
-  background: rgba(217, 4, 41, 0.8);
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 50px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(217, 4, 41, 0.3);
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-.glass-btn:hover {
-  background: rgba(217, 4, 41, 1);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(217, 4, 41, 0.4);
+@layer base {
+  :root {
+    /* Tet Theme Colors */
+    --tet-red-primary: 356 100% 41%;
+    /* #D40000 - Deep Red */
+    --tet-red-dark: 356 100% 25%;
+    /* Darker Red */
+    --tet-gold: 48 100% 50%;
+    /* #FFD700 - Gold */
+    --tet-gold-light: 48 100% 70%;
+    /* Lighter Gold */
+    --tet-cream: 54 100% 92%;
+    /* #FFFCD6 - Parchment */
+
+    --background: 356 90% 15%;
+    /* Dark Red Background */
+    --foreground: 54 100% 92%;
+    /* Cream Text */
+  }
+
+  body {
+    @apply bg-red-950 text-yellow-50 font-sans tracking-wide antialiased overflow-x-hidden;
+    background-image:
+      radial-gradient(circle at 50% 0%, #ff000033 0%, transparent 50%),
+      radial-gradient(circle at 100% 0%, #ffd7001a 0%, transparent 30%),
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d40000' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    min-height: 100vh;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-red-950;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-yellow-500/30 rounded-full hover:bg-yellow-500/50;
+  }
+
+  /* Glassmorphism Utilities */
+  .glass-panel {
+    @apply bg-red-900/40 backdrop-blur-xl border border-yellow-500/30 shadow-2xl shadow-red-950/50;
+  }
+
+  .glass-button {
+    @apply bg-gradient-to-r from-red-600 to-red-700 text-yellow-100 border border-yellow-500/50 shadow-lg shadow-red-900/50 hover:from-red-500 hover:to-red-600 transition-all duration-300;
+  }
+
+  .text-glow {
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  }
 }
 
 /* Animations */
 @keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
-  100% { transform: translateY(0px); }
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
 }
 
 .animate-float {

@@ -11,27 +11,32 @@ import { api } from '../lib/api';
 // Envelope Component with 3D Flip
 const Envelope = ({ onClick, opened, value, wish }: { onClick: () => void, opened: boolean, value?: string, wish?: string }) => {
     return (
-        <div className="relative w-64 h-80 perspective-1000 cursor-pointer" onClick={onClick}>
+        <div className="relative w-64 h-80 perspective-1000 cursor-pointer group" onClick={onClick}>
             <motion.div
-                className="w-full h-full relative preserve-3d transition-all duration-700"
-                animate={{ rotateY: opened ? 180 : 0 }}
+                className={`w-full h-full relative preserve-3d transition-transform duration-700 ${opened ? 'rotate-y-180' : ''}`}
+                whileHover={{ scale: 1.05, rotateZ: 2 }}
             >
                 {/* Front */}
-                <div className="absolute inset-0 backface-hidden bg-red-600 rounded-xl shadow-2xl flex flex-col items-center justify-center border-2 border-yellow-500/30">
-                    <div className="w-20 h-20 rounded-full bg-yellow-400 flex items-center justify-center mb-4 shadow-inner border-2 border-yellow-200">
-                        <span className="text-4xl font-bold text-red-700">Tết</span>
+                <div className="absolute inset-0 backface-hidden bg-gradient-to-br from-red-600 to-red-800 rounded-xl shadow-2xl border-2 border-yellow-500 flex flex-col items-center justify-center p-4">
+                    <div className="w-full h-full border-2 border-dashed border-yellow-500/50 rounded-lg flex flex-col items-center justify-center">
+                        <img
+                            src="https://img.icons8.com/color/96/year-of-snake.png"
+                            alt="Snake Year"
+                            className="w-20 h-20 mb-4 drop-shadow-lg filter brightness-110"
+                        />
+                        <h2 className="text-4xl font-black text-yellow-400 uppercase tracking-widest drop-shadow-md text-glow">Lì Xì</h2>
+                        <p className="text-yellow-200 mt-2 font-dancing text-xl">Năm Mới Bình An</p>
                     </div>
-                    <div className="text-yellow-200 font-serif text-xl tracking-widest">LÌ XÌ 2026</div>
-                    <div className="absolute top-0 w-full h-1/3 bg-red-700/50 rounded-t-xl clip-triangle-down" />
                 </div>
 
                 {/* Back (Result) */}
-                <div className="absolute inset-0 backface-hidden rotate-y-180 bg-white rounded-xl shadow-2xl flex flex-col items-center justify-center p-6 text-center border-4 border-yellow-400">
-                    <div className="text-sm text-gray-400 mb-2">Chúc mừng bạn nhận được</div>
-                    <div className="text-4xl font-bold text-red-600 mb-4">{value}</div>
-                    <div className="w-full h-px bg-gray-200 mb-4" />
-                    <p className="text-gray-600 text-sm italic">"{wish}"</p>
-                    <div className="mt-8 text-xs text-gray-300 font-mono">Bảo Duy Media</div>
+                <div className="absolute inset-0 backface-hidden rotate-y-180 bg-gradient-to-br from-yellow-100 to-yellow-50 rounded-xl shadow-2xl border-4 border-red-600 flex flex-col items-center justify-center p-6 text-center">
+                    <div className="absolute top-2 right-2 text-red-500/20">
+                        <Trophy size={40} />
+                    </div>
+                    <p className="text-red-800 font-bold uppercase tracking-wider mb-2 text-sm">Chúc Mừng</p>
+                    <h3 className="text-4xl font-black text-red-600 mb-4">{value}</h3>
+                    <p className="text-red-900/80 italic text-sm leading-relaxed border-t border-red-200 pt-4">"{wish}"</p>
                 </div>
             </motion.div>
         </div>

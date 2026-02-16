@@ -117,30 +117,30 @@ const HostDashboard = () => {
 
             <div className="space-y-6">
                 {/* Budget Summary - Sticky Top */}
-                <Card className="sticky top-4 z-20 bg-black/40 backdrop-blur-xl border-yellow-500/30 shadow-yellow-500/10">
+                <Card className="sticky top-4 z-20 bg-red-900/90 backdrop-blur-xl border-yellow-500/50 shadow-yellow-500/20">
                     <div className="flex justify-between items-center">
                         <div>
-                            <p className="text-sm text-white/60">Tổng ngân sách</p>
-                            <p className="text-2xl font-bold text-yellow-400">
+                            <p className="text-sm text-yellow-200/80 uppercase tracking-wider">Tổng ngân sách</p>
+                            <p className="text-3xl font-black text-yellow-400 drop-shadow-sm text-glow">
                                 {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalMoney)}
                             </p>
                         </div>
                         <div className="text-right">
-                            <p className="text-sm text-white/60">Số bao lì xì</p>
-                            <p className="text-2xl font-bold text-white">{totalEnvelopes}</p>
+                            <p className="text-sm text-yellow-200/80 uppercase tracking-wider">Số bao lì xì</p>
+                            <p className="text-3xl font-black text-white">{totalEnvelopes}</p>
                         </div>
                     </div>
                 </Card>
 
                 {/* Money Settings */}
                 <Card>
-                    <div className="flex items-center gap-2 mb-4 text-lg font-bold">
-                        <Coins className="w-5 h-5 text-yellow-400" /> Phân bổ tiền
+                    <div className="flex items-center gap-2 mb-4 text-xl font-bold text-yellow-300 border-b border-white/10 pb-2">
+                        <Coins className="w-6 h-6 text-yellow-400" /> Phân bổ tiền
                     </div>
                     <div className="space-y-4">
                         {DENOMINATIONS.map((d) => (
                             <div key={d.value} className="flex items-center gap-4">
-                                <div className={`w-16 py-1 px-2 rounded text-center text-xs font-bold text-white shadow-sm ${d.color}`}>
+                                <div className={`w-16 py-1 px-2 rounded text-center text-xs font-bold text-white shadow-sm ring-1 ring-white/20 ${d.color}`}>
                                     {d.label}
                                 </div>
                                 <div className="flex-1">
@@ -150,20 +150,20 @@ const HostDashboard = () => {
                                         max="20"
                                         value={counts[d.value] || 0}
                                         onChange={(e) => setCounts({ ...counts, [d.value]: parseInt(e.target.value) })}
-                                        className="w-full accent-red-500 h-2 bg-white/10 rounded-lg appearance-none cursor-pointer"
+                                        className="w-full accent-yellow-400 h-2 bg-red-950/50 rounded-lg appearance-none cursor-pointer border border-white/10"
                                     />
                                 </div>
                                 <div className="flex items-center gap-2 w-24 justify-end">
                                     <button
                                         onClick={() => handleCountChange(d.value, -1)}
-                                        className="w-6 h-6 rounded bg-white/10 hover:bg-white/20 flex items-center justify-center"
+                                        className="w-8 h-8 rounded-full bg-red-950/50 hover:bg-red-800 border border-yellow-500/30 text-yellow-300 flex items-center justify-center transition-colors"
                                     >
                                         -
                                     </button>
-                                    <span className="w-6 text-center font-mono">{counts[d.value] || 0}</span>
+                                    <span className="w-6 text-center font-bold text-white">{counts[d.value] || 0}</span>
                                     <button
                                         onClick={() => handleCountChange(d.value, 1)}
-                                        className="w-6 h-6 rounded bg-white/10 hover:bg-white/20 flex items-center justify-center"
+                                        className="w-8 h-8 rounded-full bg-red-950/50 hover:bg-red-800 border border-yellow-500/30 text-yellow-300 flex items-center justify-center transition-colors"
                                     >
                                         +
                                     </button>
@@ -175,8 +175,8 @@ const HostDashboard = () => {
 
                 {/* Traps Settings */}
                 <Card>
-                    <div className="flex items-center gap-2 mb-4 text-lg font-bold text-red-400">
-                        <AlertTriangle className="w-5 h-5" /> Lì xì "Bẫy" (Vui vẻ)
+                    <div className="flex items-center gap-2 mb-4 text-xl font-bold text-red-300 border-b border-white/10 pb-2">
+                        <AlertTriangle className="w-6 h-6" /> Lì xì "Bẫy" (Vui vẻ)
                     </div>
 
                     <div className="flex gap-2 mb-4">
@@ -186,7 +186,7 @@ const HostDashboard = () => {
                             onChange={(e) => setNewTrap(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && addTrap()}
                             placeholder="VD: Chúc bạn may mắn lần sau..."
-                            className="flex-1 bg-white/5 border border-white/20 rounded-lg px-4 py-2 focus:outline-none focus:border-red-500"
+                            className="flex-1 bg-red-950/50 border border-yellow-500/30 rounded-lg px-4 py-2 text-yellow-100 placeholder:text-white/30 focus:outline-none focus:border-yellow-400 transition-all"
                         />
                         <Button size="sm" onClick={addTrap}>Thêm</Button>
                     </div>
@@ -198,20 +198,20 @@ const HostDashboard = () => {
                                 initial={{ opacity: 0, x: -10 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, scale: 0.9 }}
-                                className="flex items-center justify-between bg-white/5 px-4 py-2 rounded-lg border border-white/5"
+                                className="flex items-center justify-between bg-red-950/30 px-4 py-3 rounded-lg border border-yellow-500/10"
                             >
-                                <span>{trap}</span>
-                                <button onClick={() => removeTrap(idx)} className="text-white/40 hover:text-red-400">
+                                <span className="text-yellow-50">{trap}</span>
+                                <button onClick={() => removeTrap(idx)} className="text-white/40 hover:text-red-400 transition-colors">
                                     <Trash2 className="w-4 h-4" />
                                 </button>
                             </motion.div>
                         ))}
-                        {traps.length === 0 && <p className="text-white/30 text-sm italic">Chưa có lì xì bẫy nào.</p>}
+                        {traps.length === 0 && <p className="text-white/30 text-sm italic py-2 text-center">Chưa có lì xì bẫy nào.</p>}
                     </div>
                 </Card>
 
                 <Button
-                    className="w-full py-4 text-lg"
+                    className="w-full py-4 text-xl uppercase tracking-widest shadow-yellow-500/20"
                     size="lg"
                     onClick={handleCreateRoom}
                     disabled={totalEnvelopes === 0}

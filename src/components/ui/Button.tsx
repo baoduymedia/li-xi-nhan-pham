@@ -20,10 +20,10 @@ const Button = ({
     const baseStyles = "inline-flex items-center justify-center rounded-full font-bold transition-all focus:outline-none disabled:opacity-50 disabled:pointer-events-none";
 
     const variants = {
-        primary: "bg-red-600 text-white hover:bg-red-700 shadow-lg shadow-red-600/30 border border-transparent",
-        secondary: "bg-yellow-400 text-red-900 hover:bg-yellow-300 shadow-lg shadow-yellow-400/30 border border-transparent",
-        outline: "bg-transparent text-white border-2 border-white/20 hover:bg-white/10 hover:border-white/40",
-        ghost: "bg-transparent text-white/70 hover:text-white hover:bg-white/5",
+        primary: "bg-gradient-to-r from-[var(--tet-red-primary)] to-[var(--tet-red-dark)] text-[var(--tet-gold)] border border-[var(--tet-gold)] shadow-lg shadow-red-900/50 hover:brightness-110",
+        secondary: "bg-[var(--tet-gold)] text-[var(--tet-red-dark)] hover:bg-[var(--tet-gold-light)] shadow-lg shadow-yellow-500/30 border border-transparent font-extrabold",
+        outline: "bg-transparent text-[var(--tet-gold)] border-2 border-[var(--tet-gold)] hover:bg-[var(--tet-gold)]/10",
+        ghost: "bg-transparent text-yellow-200/70 hover:text-yellow-100 hover:bg-white/5",
     };
 
     const sizes = {

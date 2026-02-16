@@ -12,12 +12,18 @@ const Card = ({ children, className, hoverEffect = false, ...props }: CardProps)
     return (
         <motion.div
             className={cn(
-                "bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl",
-                hoverEffect && "hover:bg-white/10 transition-colors duration-300",
+                "glass-panel rounded-2xl p-6 relative overflow-hidden",
+                hoverEffect && "hover:bg-red-900/60 transition-colors duration-300",
                 className
             )}
             {...props}
         >
+            {/* Decorative Corner */}
+            <div className="absolute top-0 right-0 w-16 h-16 pointer-events-none opacity-20">
+                <svg viewBox="0 0 100 100" className="w-full h-full text-yellow-500 fill-current">
+                    <path d="M0 0 H100 V100 Z" />
+                </svg>
+            </div>
             {children}
         </motion.div>
     );

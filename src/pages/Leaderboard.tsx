@@ -37,33 +37,38 @@ const Leaderboard = () => {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.1 }}
                     >
-                        <Card className={`flex items-center gap-4 p-4 ${index === 0 ? 'bg-yellow-500/20 border-yellow-400/50' : ''}`}>
-                            <div className="w-10 h-10 flex items-center justify-center font-bold text-xl text-white/50">
-                                {index === 0 ? <Crown className="text-yellow-400 fill-yellow-400" /> :
-                                    index === 1 ? <Medal className="text-gray-300 fill-gray-300" /> :
-                                        index === 2 ? <Medal className="text-amber-700 fill-amber-700" /> :
+                        <Card className={`flex items-center gap-4 p-4 border transition-all ${index === 0 ? 'bg-gradient-to-r from-yellow-500/20 to-transparent border-yellow-400 shadow-lg shadow-yellow-500/10' :
+                                'border-white/10 hover:border-yellow-500/30'
+                            }`}>
+                            <div className={`w-10 h-10 flex items-center justify-center font-bold text-xl ${index === 0 ? 'text-yellow-400 drop-shadow-md' : 'text-white/40'
+                                }`}>
+                                {index === 0 ? <Crown className="text-yellow-400 fill-yellow-400 w-8 h-8 filter drop-shadow-lg" /> :
+                                    index === 1 ? <Medal className="text-gray-300 fill-gray-300 w-6 h-6" /> :
+                                        index === 2 ? <Medal className="text-amber-700 fill-amber-700 w-6 h-6" /> :
                                             `#${index + 1}`}
                             </div>
 
-                            <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center overflow-hidden border border-white/20">
-                                <User className="w-6 h-6 text-white/50" />
+                            <div className="w-12 h-12 rounded-full bg-red-950 flex items-center justify-center overflow-hidden border-2 border-yellow-500/50 shadow-inner">
+                                <User className="w-6 h-6 text-yellow-200" />
                             </div>
 
                             <div className="flex-1">
-                                <div className="flex items-center gap-2">
-                                    <h3 className="font-bold text-lg text-white">{player.name}</h3>
+                                <div className="flex flex-col">
+                                    <h3 className="font-bold text-lg text-white group-hover:text-yellow-300 transition-colors">{player.name}</h3>
                                     {player.badge && (
-                                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider
-                      ${player.badge === 'Nhân Phẩm Âm' ? 'bg-gray-700 text-gray-300' : 'bg-red-500 text-white'}
-                    `}>
-                                            {player.badge}
-                                        </span>
+                                        <div className="flex">
+                                            <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider mt-1
+                                             ${player.badge === 'Nhân Phẩm Âm' ? 'bg-gray-800 text-gray-400 border border-gray-600' : 'bg-red-600 text-yellow-100 border border-yellow-500'}
+                                            `}>
+                                                {player.badge}
+                                            </span>
+                                        </div>
                                     )}
                                 </div>
                             </div>
 
                             <div className="text-right">
-                                <div className="font-bold text-yellow-400 text-lg">
+                                <div className="font-black text-yellow-400 text-lg drop-shadow-sm">
                                     {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(player.amount)}
                                 </div>
                             </div>

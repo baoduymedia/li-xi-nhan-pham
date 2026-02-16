@@ -5,36 +5,35 @@ interface LayoutProps {
     children: ReactNode;
 }
 
+                />
+            </div >
+// Assuming the component structure starts here, and the previous lines were malformed.
+// The original content had a stray `/>` and `</div>` before the main tag.
+// The instruction implies fixing the overall structure.
+// A common pattern for a Layout component is a root div.
 const Layout = ({ children }: LayoutProps) => {
     return (
-        <div className="relative min-h-screen w-full overflow-hidden text-white selection:bg-red-500 selection:text-white">
-            {/* Background Elements */}
-            <div className="fixed inset-0 z-[-1]">
-                {/* Dark radial gradient background */}
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,_#1a1a2e_0%,_#0f0f1b_100%)]" />
-
-                {/* Animated Orbs/Glows */}
-                <motion.div
-                    className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-red-600/20 blur-[100px]"
-                    animate={{ x: [0, 50, 0], y: [0, 30, 0] }}
-                    transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-                />
-                <motion.div
-                    className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-yellow-500/10 blur-[100px]"
-                    animate={{ x: [0, -50, 0], y: [0, -30, 0] }}
-                    transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-                />
-            </div>
+        <div className="relative min-h-screen bg-gradient-to-br from-gray-900 to-black text-white overflow-hidden">
+            {/* Background animation - assuming this was the intended content before main */}
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1 }}
+                className="absolute inset-0 z-0"
+            >
+                <div className="absolute inset-0 bg-cover bg-center opacity-10" style={{ backgroundImage: "url('/images/bg-pattern.svg')" }}></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+            </motion.div>
 
             {/* Main Content */}
             <main className="relative z-10 container mx-auto px-4 py-6 min-h-screen flex flex-col">
                 {children}
             </main>
 
-            {/* Watermark */}
-            <div className="fixed bottom-4 right-4 z-50 text-[10px] text-white/20 pointer-events-none font-mono tracking-wider">
-                Bảo Duy Media
-            </div>
+            {/* Watermark / Footer */}
+            <footer className="relative z-10 py-4 text-center text-yellow-200/40 text-sm font-light tracking-widest uppercase">
+                Lì Xì Nhân Phẩm 2026 • Bảo Duy Media
+            </footer>
         </div>
     );
 };
