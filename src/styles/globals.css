@@ -72,61 +72,150 @@ body {
   }
 
   body {
-    @apply bg-red-950 text-yellow-50 font-sans tracking-wide antialiased overflow-x-hidden;
-    background-image:
-      radial-gradient(circle at 50% 0%, #ff000033 0%, transparent 50%),
-      radial-gradient(circle at 100% 0%, #ffd7001a 0%, transparent 30%),
-      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d40000' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    min-height: 100vh;
+    @apply text-white min-h-screen overflow-x-hidden;
+    background: radial-gradient(circle at 50% 10%, #800000, #4a0404, #2b0202);
+    font-family: 'Montserrat', sans-serif;
   }
 
-  /* Custom Scrollbar */
-  ::-webkit-scrollbar {
-    width: 6px;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Playfair Display', serif;
   }
+}
 
-  ::-webkit-scrollbar-track {
-    @apply bg-red-950;
-  }
+@layer components {
 
-  ::-webkit-scrollbar-thumb {
-    @apply bg-yellow-500/30 rounded-full hover:bg-yellow-500/50;
-  }
-
-  /* Glassmorphism Utilities */
-  .glass-panel {
-    @apply bg-red-900/40 backdrop-blur-xl border border-yellow-500/30 shadow-2xl shadow-red-950/50;
-  }
-
+  /* Ultra-Premium Glass Effect */
   .glass-premium {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow:
+      0 4px 30px rgba(0, 0, 0, 0.1),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.05);
   }
 
-  .neumorphic-button {
-    background: linear-gradient(145deg, #d40000, #b30000);
-    box-shadow: 5px 5px 10px #8f0000,
-      -5px -5px 10px #ff0000;
+  /* Gold Foil Text */
+  .text-gold-premium {
+    background: linear-gradient(to bottom, #FFD700, #FDB931, #9E7903, #FDB931, #FFD700);
+    -webkit-background-clip: text;
+    color: transparent;
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+    font-weight: 700;
+  }
+
+  /* Neumorphic Button (Refined) */
+  .btn-neumorphic {
+    background: linear-gradient(145deg, #d40000, #a30000);
+    box-shadow:
+      5px 5px 10px #2b0000,
+      -5px -5px 10px #ff3333;
     border: none;
-    transition: all 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    @apply rounded-xl font-bold uppercase tracking-wider text-yellow-100 flex items-center justify-center;
   }
 
-  .neumorphic-button:active {
-    background: linear-gradient(145deg, #b30000, #d40000);
-    box-shadow: inset 5px 5px 10px #8f0000,
-      inset -5px -5px 10px #ff0000;
+  .btn-neumorphic:active {
+    background: linear-gradient(145deg, #a30000, #d40000);
+    box-shadow:
+      inset 5px 5px 10px #2b0000,
+      inset -5px -5px 10px #ff3333;
+    transform: scale(0.98);
   }
 
-  .glass-button {
-    @apply bg-gradient-to-r from-red-600 to-red-700 text-yellow-100 border border-yellow-500/50 shadow-lg shadow-red-900/50 hover:from-red-500 hover:to-red-600 transition-all duration-300;
+  /* 3D Envelope Container */
+  .perspective-container {
+    perspective: 1000px;
   }
 
-  .text-glow {
-    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  .preserve-3d {
+    transform-style: preserve-3d;
   }
+
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+
+  /* Glitch Effect for Troll */
+  .glitch-text {
+    position: relative;
+  }
+
+  .glitch-text::before,
+  .glitch-text::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .glitch-text::before {
+    left: 2px;
+    text-shadow: -1px 0 #00ffff;
+    clip: rect(44px, 450px, 56px, 0);
+    animation: glitch-anim 5s infinite linear alternate-reverse;
+  }
+
+  .glitch-text::after {
+    left: -2px;
+    text-shadow: -1px 0 #ff00ff;
+    clip: rect(44px, 450px, 56px, 0);
+    animation: glitch-anim2 5s infinite linear alternate-reverse;
+  }
+
+  @keyframes glitch-anim {
+    0% {
+      clip: rect(31px, 9999px, 94px, 0);
+    }
+
+    4.166% {
+      clip: rect(91px, 9999px, 43px, 0);
+    }
+
+    8.333% {
+      clip: rect(6px, 9999px, 87px, 0);
+    }
+
+    /* ... shortened for brevity, browser handles interpolation well enough for effect */
+    100% {
+      clip: rect(69px, 9999px, 20px, 0);
+    }
+  }
+
+  @keyframes glitch-anim2 {
+    0% {
+      clip: rect(65px, 9999px, 100px, 0);
+    }
+
+    100% {
+      clip: rect(61px, 9999px, 34px, 0);
+    }
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #2b0202;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 /* Animations */
