@@ -70,23 +70,31 @@ export const api = {
     },
 
     // Open Envelope (Game Logic)
-    async openEnvelope(roomId: string, playerId: string) {
+    async openEnvelope(roomId: string, playerId: string, forcedValue?: { amount: number, wish: string, isTrap?: boolean }) {
         // Ideally this logic should be Server-Side (Edge Function) to prevent cheating
         // For now, we simulate client-side for the demo
 
-        // 1. Fetch Room Settings to see what's left
-        // (Simplified)
+        let resultAmount = 0;
+        let resultWish = "";
+        let isTrap = false;
 
-        const amounts = [10000, 20000, 50000, 100000, 200000, 500000];
-        const wishes = [
-            "Tiền vào như nước sông Đà, tiền ra nhỏ giọt như cà phê phin.",
-            "Năm mới bớt sống ảo, tập trung làm giàu đi bạn ơi.",
-            "Đại gia chân đất, năm nay phất lên như diều gặp gió!",
-            "Sớm sinh quý tử (nếu muốn), muộn sinh quý tử (nếu chưa muốn).",
-        ];
-
-        const randomAmount = amounts[Math.floor(Math.random() * amounts.length)];
-        const randomWish = wishes[Math.floor(Math.random() * wishes.length)];
+        if (forcedValue) {
+            resultAmount = forcedValue.amount;
+            resultWish = forcedValue.wish;
+            isTrap = forcedValue.isTrap || false;
+        } else {
+            // 1. Fetch Room Settings to see what's left
+            // (Simplified)
+            const amounts = [10000, 20000, 50000, 100000, 200000, 500000];
+            const wishes = [
+                "Tiền vào như nước sông Đà, tiền ra nhỏ giọt như cà phê phin.",
+                "Năm mới bớt sống ảo, tập trung làm giàu đi bạn ơi.",
+                "Đại gia chân đất, năm nay phất lên như diều gặp gió!",
+                "Sớm sinh quý tử (nếu muốn), muộn sinh quý tử (nếu chưa muốn).",
+            ];
+            resultAmount = amounts[Math.floor(Math.random() * amounts.length)];
+            resultWish = wishes[Math.floor(Math.random() * wishes.length)];
+        }
 
         if (!(supabase as any).supabaseUrl.includes('placeholder')) {
             const { data, error } = await supabase
@@ -94,15 +102,15 @@ export const api = {
                 .insert([{
                     room_id: roomId,
                     player_id: playerId,
-                    amount: randomAmount,
-                    wish: randomWish
+                    amount: resultAmount,
+                    wish: resultWish
                 }])
                 .select()
                 .single();
             if (error) throw error;
-            return data;
+            return { ...data, isTrap };
         } else {
-            return { amount: randomAmount, wish: randomWish, is_trap: false };
+            return { amount: resultAmount, wish: resultWish, is_trap: isTrap };
         }
     },
 

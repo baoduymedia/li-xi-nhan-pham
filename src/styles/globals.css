@@ -98,6 +98,28 @@ body {
     @apply bg-red-900/40 backdrop-blur-xl border border-yellow-500/30 shadow-2xl shadow-red-950/50;
   }
 
+  .glass-premium {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  }
+
+  .neumorphic-button {
+    background: linear-gradient(145deg, #d40000, #b30000);
+    box-shadow: 5px 5px 10px #8f0000,
+      -5px -5px 10px #ff0000;
+    border: none;
+    transition: all 0.2s ease;
+  }
+
+  .neumorphic-button:active {
+    background: linear-gradient(145deg, #b30000, #d40000);
+    box-shadow: inset 5px 5px 10px #8f0000,
+      inset -5px -5px 10px #ff0000;
+  }
+
   .glass-button {
     @apply bg-gradient-to-r from-red-600 to-red-700 text-yellow-100 border border-yellow-500/50 shadow-lg shadow-red-900/50 hover:from-red-500 hover:to-red-600 transition-all duration-300;
   }

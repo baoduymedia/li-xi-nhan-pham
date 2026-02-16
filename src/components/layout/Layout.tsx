@@ -1,33 +1,59 @@
-import type { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { motion } from 'framer-motion';
 
-interface LayoutProps {
-    children: ReactNode;
-}
-
-                />
-            </div >
-// Assuming the component structure starts here, and the previous lines were malformed.
-// The original content had a stray `/>` and `</div>` before the main tag.
-// The instruction implies fixing the overall structure.
-// A common pattern for a Layout component is a root div.
-const Layout = ({ children }: LayoutProps) => {
+const Layout = ({ children }: { children: ReactNode }) => {
     return (
-        <div className="relative min-h-screen bg-gradient-to-br from-gray-900 to-black text-white overflow-hidden">
-            {/* Background animation - assuming this was the intended content before main */}
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1 }}
-                className="absolute inset-0 z-0"
-            >
-                <div className="absolute inset-0 bg-cover bg-center opacity-10" style={{ backgroundImage: "url('/images/bg-pattern.svg')" }}></div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
-            </motion.div>
+        <div className="min-h-screen w-full relative overflow-hidden flex flex-col">
+            {/* Falling Blossoms Animation Background */}
+            <div className="absolute inset-0 pointer-events-none z-0">
+                {[...Array(20)].map((_, i) => (
+                    <motion.div
+                        key={i}
+                        initial={{
+                            opacity: 0,
+                            y: -20,
+                            x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1000)
+                        }}
+                        animate={{
+                            opacity: [0, 1, 0],
+                            y: (typeof window !== 'undefined' ? window.innerHeight : 800) + 100,
+                            x: (Math.random() - 0.5) * 200 + (Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1000)),
+                            rotate: Math.random() * 360
+                        }}
+                        transition={{
+                            duration: 5 + Math.random() * 10,
+                            repeat: Infinity,
+                            delay: Math.random() * 10,
+                            ease: "linear"
+                        }}
+                        className="absolute top-0 rounded-full bg-pink-300/60 blur-[1px]"
+                        style={{
+                            width: Math.random() * 10 + 5 + 'px',
+                            height: Math.random() * 10 + 5 + 'px',
+                            backgroundColor: Math.random() > 0.5 ? '#ffb7b2' : '#ffd700', // Pink or Gold petals
+                        }}
+                    />
+                ))}
+            </div>
 
-            {/* Main Content */}
-            <main className="relative z-10 container mx-auto px-4 py-6 min-h-screen flex flex-col">
-                {children}
+            {/* Decorative Corners (Golden Patterns) */}
+            <div className="absolute top-0 left-0 w-32 h-32 pointer-events-none z-0 opacity-40">
+                <svg viewBox="0 0 100 100" fill="none" className="w-full h-full text-yellow-500">
+                    <path d="M0 0C50 0 50 50 0 50V0Z" fill="currentColor" />
+                    <path d="M10 10C40 10 40 40 10 40V10Z" fill="var(--tet-red-dark)" opacity="0.5" />
+                </svg>
+            </div>
+            <div className="absolute top-0 right-0 w-32 h-32 pointer-events-none z-0 opacity-40 rotate-90">
+                <svg viewBox="0 0 100 100" fill="none" className="w-full h-full text-yellow-500">
+                    <path d="M0 0C50 0 50 50 0 50V0Z" fill="currentColor" />
+                </svg>
+            </div>
+
+            {/* Main Content Area */}
+            <main className="flex-1 relative z-10 p-4 md:p-8 flex flex-col items-center justify-center">
+                <div className="w-full max-w-6xl mx-auto">
+                    {children}
+                </div>
             </main>
 
             {/* Watermark / Footer */}
