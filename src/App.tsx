@@ -6,11 +6,13 @@ import Gameplay from './pages/Gameplay';
 import Leaderboard from './pages/Leaderboard';
 import TVDashboard from './pages/TVDashboard';
 import AdminDashboard from './pages/AdminDashboard';
+import InstallPrompt from './components/pwa/InstallPrompt';
 
 function App() {
   return (
     <Router>
       <Layout>
+        <InstallPrompt />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/host" element={<HostDashboard />} />

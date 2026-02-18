@@ -18,6 +18,14 @@ const AdminDashboard = () => {
         redemptionQueueEnabled: true
     });
 
+    // Gift Injection State
+    const [giftTargetId, setGiftTargetId] = useState('');
+    const [giftContent, setGiftContent] = useState('');
+
+    // Challenge State
+    const [challengeContent, setChallengeContent] = useState('');
+    const [challengeDuration, setChallengeDuration] = useState(60);
+
     useEffect(() => {
         if (authenticated) {
             fetchGlobalData();
@@ -235,14 +243,108 @@ const AdminDashboard = () => {
                     </div>
 
                     <button
-                        onClick={() => {
-                            localStorage.setItem('admin_ad_config', JSON.stringify(adConfig));
-                            alert('Cấu hình quảng cáo đã lưu!');
+                        onClick={async () => {
+                            // localStorage.setItem('admin_ad_config', JSON.stringify(adConfig));
+                            // Sync to all active rooms or just current context?
+                            // For simplicity, let's sync to ALL active rooms
+                            const activeRooms = rooms.filter(r => r.status === 'playing');
+                            for (const room of activeRooms) {
+                                await api.setAdConfig(room.id, adConfig);
+                            }
+                            alert(`Cấu hình quảng cáo đã lưu và đồng bộ cho ${activeRooms.length} phòng!`);
                         }}
                         className="w-full py-2 bg-purple-600 hover:bg-purple-700 rounded font-bold text-white"
                     >
-                        Lưu cấu hình
+                        Lưu & Đồng Bộ Cấu Hình
                     </button>
+                </div>
+            </Card>
+
+            {/* Gift Injection (Live Swap Extended) */}
+            <Card className="border-pink-500/30">
+                <div className="flex items-center gap-2 mb-4 text-xl font-bold text-pink-300">
+                    <span className="text-2xl">🎁</span> Gift Injection & Trap Setting
+                </div>
+                <div className="space-y-4">
+                    <div className="flex gap-2">
+                        <input
+                            type="number"
+                            placeholder="Envelope ID (Optional)"
+                            value={giftTargetId}
+                            onChange={(e) => setGiftTargetId(e.target.value)}
+                            className="w-24 px-3 py-2 bg-white/10 rounded text-white"
+                        />
+                        <input
+                            type="text"
+                            placeholder="Content (e.g. 'Voucher 50%', 'Trap: Dance')"
+                            value={giftContent}
+                            onChange={(e) => setGiftContent(e.target.value)}
+                            className="flex-1 px-3 py-2 bg-white/10 rounded text-white"
+                        />
+                        <button
+                            onClick={async () => {
+                                if (!giftContent) return;
+                                // Apply to all active rooms for demo simplicity, or select room
+                                const targetRoom = rooms.find(r => r.status === 'playing');
+                                if (targetRoom) {
+                                    await api.liveSwapTrap(targetRoom.id, giftTargetId ? parseInt(giftTargetId) : null, giftContent);
+                                    alert(`Injected into Room ${targetRoom.code}`);
+                                    setGiftContent('');
+                                } else {
+                                    alert("No active room found");
+                                }
+                            }}
+                            className="px-4 py-2 bg-pink-600 hover:bg-pink-500 rounded font-bold text-white"
+                        >
+                            Inject
+                        </button>
+                    </div>
+                </div>
+            </Card>
+
+            {/* Challenge Manager */}
+            <Card className="border-red-500/30">
+                <div className="flex items-center gap-2 mb-4 text-xl font-bold text-red-300">
+                    <span className="text-2xl">🔥</span> Global Challenge
+                </div>
+                <div className="space-y-4">
+                    <textarea
+                        value={challengeContent}
+                        onChange={(e) => setChallengeContent(e.target.value)}
+                        placeholder="Nhập nội dung thử thách cho tất cả..."
+                        className="w-full h-20 px-3 py-2 bg-white/10 border border-white/20 rounded text-white"
+                    />
+                    <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-2 text-white/60">
+                            <span>Duration:</span>
+                            <input
+                                type="number"
+                                value={challengeDuration}
+                                onChange={(e) => setChallengeDuration(parseInt(e.target.value))}
+                                className="w-16 px-2 py-1 bg-white/10 rounded text-center text-white"
+                            />
+                            <span>s</span>
+                        </div>
+                        <button
+                            onClick={async () => {
+                                if (!challengeContent) return;
+                                const targetRoom = rooms.find(r => r.status === 'playing');
+                                if (targetRoom) {
+                                    await api.setChallenge(targetRoom.id, {
+                                        id: 'chall-' + Date.now(),
+                                        content: challengeContent,
+                                        duration: challengeDuration
+                                    });
+                                    alert(`Challenge sent to Room ${targetRoom.code}`);
+                                } else {
+                                    alert("No active room found");
+                                }
+                            }}
+                            className="px-6 py-2 bg-red-600 hover:bg-red-500 rounded font-bold text-white"
+                        >
+                            Phát Động
+                        </button>
+                    </div>
                 </div>
             </Card>
 

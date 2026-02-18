@@ -23,6 +23,15 @@ export interface ChallengeItem {
     duration: number; // seconds
 }
 
+export interface AdConfig {
+    enabled: boolean;
+    frequency: number;
+    bannerUrl: string;
+    videoUrl: string;
+    waitingScreenEnabled: boolean;
+    redemptionQueueEnabled: boolean;
+}
+
 export interface Player {
     id: string;
     name: string;
@@ -70,6 +79,7 @@ interface RoomData {
     history?: ParticipantResult[];
     activeChallenge?: ChallengeItem;
     activeEvents?: Array<{ type: string; playerName: string; deviceId: string; envelopeId?: number; timestamp: number }>;
+    adConfig?: AdConfig;
 
     // GOD MODE SETTINGS
     weights?: Record<string, number>; // Key: "500000", "50000", "TRAP". Value: 0-100 (Relative weight)
@@ -443,7 +453,8 @@ export const api = {
             history,
             envelopes: room.envelopes,
             aiInsights: AIAdvisor.analyze(room),
-            weights: room.weights // Send weights to Host UI
+            weights: room.weights, // Send weights to Host UI
+            adConfig: room.adConfig // Send ad config to Client/TV
         };
     },
 
@@ -608,6 +619,17 @@ export const api = {
         const room = findRoom(rooms, roomId);
         if (room) {
             room.status = 'ended';
+            saveDB(rooms);
+            return { success: true };
+        }
+        return { success: false };
+    },
+
+    async setAdConfig(roomId: string, config: AdConfig) {
+        const rooms = loadDB();
+        const room = findRoom(rooms, roomId);
+        if (room) {
+            room.adConfig = config;
             saveDB(rooms);
             return { success: true };
         }

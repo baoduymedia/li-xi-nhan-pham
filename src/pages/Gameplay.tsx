@@ -49,6 +49,12 @@ const Gameplay = () => {
     const [hasScanned, setHasScanned] = useState(false);
     const [auraScore, setAuraScore] = useState<number | null>(null);
 
+    // Ad State
+    const [adConfig, setAdConfig] = useState<any>(null);
+    const [showAd, setShowAd] = useState(false);
+    const [adTimer, setAdTimer] = useState(0);
+    const [playCount, setPlayCount] = useState(0);
+
     // Audio & Shake
     const { play, toggleMute, muted } = useSound();
     const isShaking = useShake();
@@ -92,6 +98,11 @@ const Gameplay = () => {
 
                     if ((stats as any).activeChallenge) {
                         setActiveChallenge((stats as any).activeChallenge);
+                    }
+
+                    // Sync Ad Config
+                    if ((stats as any).adConfig) {
+                        setAdConfig((stats as any).adConfig);
                     }
                 }
             };
@@ -232,6 +243,18 @@ const Gameplay = () => {
             } else {
                 play('troll');
             }
+
+            // Check for Ad Trigger
+            const newPlayCount = playCount + 1;
+            setPlayCount(newPlayCount);
+
+            if (adConfig?.enabled && newPlayCount % adConfig.frequency === 0) {
+                setTimeout(() => {
+                    setShowAd(true);
+                    setAdTimer(5); // 5s forced view
+                }, 2000); // Show ad 2s after result
+            }
+
         } catch (e) {
             console.error(e);
         }
@@ -311,6 +334,14 @@ const Gameplay = () => {
             if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
         }
     }, [countdown]);
+
+    // Ad Timer Effect
+    useEffect(() => {
+        if (showAd && adTimer > 0) {
+            const timer = setTimeout(() => setAdTimer(adTimer - 1), 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [showAd, adTimer]);
 
     // ... Render Login ... (Keep similar, add Sound Toggle?)
 
@@ -628,6 +659,40 @@ const Gameplay = () => {
                             <h2 className="text-4xl text-yellow-500 font-black uppercase tracking-widest animate-pulse">Trò chơi tạm dừng</h2>
                             <p className="text-white/60 mt-4">Vui lòng chờ Chủ phòng...</p>
                         </div>
+                    </div>
+                )}
+            </AnimatePresence>
+
+            {/* AD OVERLAY */}
+            <AnimatePresence>
+                {showAd && adConfig && (
+                    <div className="fixed inset-0 z-[70] bg-black flex flex-col items-center justify-center p-4">
+                        <div className="absolute top-4 right-4 text-white/50 text-sm">
+                            Quảng cáo {adTimer > 0 ? `(${adTimer}s)` : ''}
+                        </div>
+
+                        <div className="w-full max-w-lg aspect-video bg-gray-800 rounded-xl overflow-hidden mb-4 relative">
+                            {adConfig.bannerUrl ? (
+                                <img src={adConfig.bannerUrl} alt="Advertisement" className="w-full h-full object-cover" />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center text-white/20">
+                                    <span>Quảng cáo tại đây</span>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="text-center mb-8">
+                            <h3 className="text-xl font-bold text-white mb-2">Nhà Tài Trợ</h3>
+                            <p className="text-white/60">Cảm ơn bạn đã đồng hành cùng chương trình.</p>
+                        </div>
+
+                        <button
+                            disabled={adTimer > 0}
+                            onClick={() => setShowAd(false)}
+                            className={`px-8 py-3 rounded-full font-bold uppercase tracking-widest transition-all ${adTimer > 0 ? 'bg-white/10 text-white/30 cursor-not-allowed' : 'bg-white text-black hover:bg-white/90'}`}
+                        >
+                            {adTimer > 0 ? `Bỏ qua sau ${adTimer}s` : 'Bỏ qua quảng cáo'}
+                        </button>
                     </div>
                 )}
             </AnimatePresence>

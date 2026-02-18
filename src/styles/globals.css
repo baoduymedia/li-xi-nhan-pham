@@ -36,6 +36,13 @@
   h6 {
     font-family: 'Playfair Display', serif;
   }
+
+  /* Mobile Optimizations */
+  html, body {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior-y: none; /* Prevent pull-to-refresh */
+  }
 }
 
 @layer components {

@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { QRCodeSVG } from 'qrcode.react';
 import { Trophy, Activity, Users, Star } from 'lucide-react';
 import { api } from '../lib/api';
+import BrandCarousel from '../components/tv/BrandCarousel';
+import EventEffects from '../components/tv/EventEffects';
 
 const TVDashboard = () => {
     const { roomId } = useParams();
@@ -49,6 +51,8 @@ const TVDashboard = () => {
 
     return (
         <div className="min-h-screen bg-black text-white overflow-hidden font-sans flex flex-col">
+            <EventEffects roomId={roomId || ''} />
+
             {/* Top Bar */}
             <div className="h-24 bg-gradient-to-r from-red-900 to-black border-b border-yellow-500/30 flex items-center justify-between px-10 relative z-10">
                 <div className="flex items-center gap-6">
@@ -69,7 +73,7 @@ const TVDashboard = () => {
                     <div className="text-right">
                         <p className="text-sm text-white/50 uppercase">Đã mở</p>
                         <p className="text-3xl font-bold flex items-center justify-end gap-2">
-                            <Activity className="w-6 h-6 text-green-400" /> {stats.metrics.openedCount}/{stats.metrics.totalEnvelopes}
+                            <Activity className="w-6 h-6 text-green-400" /> {stats.metrics?.openedCount || 0}/{stats.metrics?.totalEnvelopes || stats.totalInitial || 0}
                         </p>
                     </div>
                 </div>
@@ -151,11 +155,16 @@ const TVDashboard = () => {
                     </div>
                 </div>
 
-                {/* Right: QR Code & CTA (4 cols) */}
+                {/* Right: QR Code & Brand Carousel (4 cols) */}
                 <div className="col-span-4 flex flex-col gap-6 z-10">
+                    {/* Brand Carousel Section */}
+                    <div className="h-1/2 bg-white/5 rounded-3xl border border-white/10">
+                        <BrandCarousel />
+                    </div>
+
                     <div className="bg-white p-6 rounded-3xl flex flex-col items-center justify-center text-black flex-1 shadow-[0_0_50px_rgba(255,255,255,0.1)]">
                         <p className="text-2xl font-black uppercase mb-6 tracking-widest text-center">Quét để tham gia</p>
-                        <QRCodeSVG value={`${window.location.origin}/play/${roomId}`} size={300} />
+                        <QRCodeSVG value={`${window.location.origin}/play/${roomId}`} size={200} />
                         <p className="mt-8 text-xl font-mono font-bold bg-black text-white px-6 py-2 rounded-xl">Phòng: {roomId}</p>
                     </div>
                 </div>
