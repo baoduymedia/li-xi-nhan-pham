@@ -1,10 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/layout/Layout';
-// Placeholder pages - will be created in next steps
 import Home from './pages/Home';
 import HostDashboard from './pages/HostDashboard';
 import Gameplay from './pages/Gameplay';
 import Leaderboard from './pages/Leaderboard';
+import TVDashboard from './pages/TVDashboard';
+import AdminDashboard from './pages/AdminDashboard';
 
 function App() {
   return (
@@ -14,7 +15,9 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/host" element={<HostDashboard />} />
           <Route path="/play/:roomId" element={<Gameplay />} />
+          <Route path="/tv/:roomId" element={<TVDashboard />} />
           <Route path="/leaderboard/:roomId" element={<Leaderboard />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
         </Routes>
       </Layout>
     </Router>

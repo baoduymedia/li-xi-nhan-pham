@@ -34,7 +34,7 @@ const Home = () => {
                         <div className="w-24 h-24 rounded-full border-4 border-yellow-400 flex items-center justify-center bg-red-800 shadow-inner mb-4 relative z-10">
                             <span className="text-5xl font-serif text-yellow-400">Tết</span>
                         </div>
-                        <div className="text-yellow-200 font-sans tracking-[0.3em] text-xs uppercase relative z-10">2026 • Year of Snake</div>
+                        <div className="text-yellow-200 font-sans tracking-[0.3em] text-xs uppercase relative z-10">2026 • YEAR OF THE HORSE</div>
 
                         {/* Shine Effect */}
                         <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-tr from-transparent via-white/10 to-transparent skew-x-12 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
