@@ -1,17 +1,21 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Trophy, Shuffle, Eye, EyeOff, AlertTriangle, ArrowLeft, Smartphone, Download, Volume2, VolumeX, ScanFace } from 'lucide-react';
 import { api } from '../lib/api';
 import confetti from 'canvas-confetti';
-import PremiumEnvelope from '../components/game/PremiumEnvelope';
-import AuraScan from '../components/game/AuraScan';
-import VoucherTemplate from '../components/game/VoucherTemplate'; // Import VoucherTemplate
 import { useShake } from '../hooks/useShake';
 import { useSound } from '../hooks/useSound';
+import { useHaptic } from '../hooks/useHaptic';
 import html2canvas from 'html2canvas';
 
+// Lazy Load Heavy Components
+const PremiumEnvelope = lazy(() => import('../components/game/PremiumEnvelope'));
+const AuraScan = lazy(() => import('../components/game/AuraScan'));
+const VoucherTemplate = lazy(() => import('../components/game/VoucherTemplate'));
 
+// Loading Skeletons
+import { LoadingSkeleton, EnvelopeSkeleton } from '../components/ui/LoadingSkeleton';
 
 interface RedemptionState {
     status: 'none' | 'requested' | 'doing' | 'completed' | 'failed';
@@ -57,6 +61,7 @@ const Gameplay = () => {
 
     // Audio & Shake
     const { play, toggleMute, muted } = useSound();
+    const { trigger: vibrate, toggle: toggleHaptics, enabled: hapticsEnabled } = useHaptic();
     const isShaking = useShake();
 
     // Fingerprint Check and SYNC
@@ -215,7 +220,7 @@ const Gameplay = () => {
             localStorage.setItem(`played_${roomId}`, 'true');
             localStorage.setItem(`result_${roomId}`, JSON.stringify(res));
 
-            if (navigator.vibrate) navigator.vibrate(200);
+            vibrate(200);
 
             if (res.success && !(res as any).isTrap) {
                 play('win');
@@ -331,7 +336,7 @@ const Gameplay = () => {
             setGameStatus('playing');
             setCountdown(null);
             play('win'); // Start sound
-            if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+            vibrate([100, 50, 100]);
         }
     }, [countdown]);
 
@@ -408,6 +413,9 @@ const Gameplay = () => {
                     <button onClick={toggleMute} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/60 hover:text-white transition-colors">
                         {muted ? <VolumeX size={20} /> : <Volume2 size={20} />}
                     </button>
+                    <button onClick={toggleHaptics} className={`w-10 h-10 rounded-full bg-white/5 flex items-center justify-center transition-colors ${hapticsEnabled ? 'text-white' : 'text-white/30'}`}>
+                        <Smartphone size={20} className={hapticsEnabled ? 'animate-pulse' : ''} />
+                    </button>
                     <div onClick={() => setGodMode(!godMode)} className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors cursor-pointer ${godMode ? 'bg-red-500 text-white' : 'bg-white/5 text-white/10 hover:text-white/30'}`}>
                         {godMode ? <Eye size={20} /> : <EyeOff size={20} />}
                     </div>
@@ -445,19 +453,21 @@ const Gameplay = () => {
             {/* SHARED ELEMENT TRANSITION GRID */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-10 w-full max-w-4xl place-items-center pb-20 relative z-0">
                 <AnimatePresence>
-                    {deck.map((envelope) => (
-                        <PremiumEnvelope
-                            key={envelope.id}
-                            layoutId={`envelope-${envelope.id}`} // Shared ID
-                            amount={envelope.amount || 0} // Could be hidden
-                            isTrap={envelope.isTrap || false}
-                            opened={envelope.status === 'opened'}
-                            status={envelope.status} // 'available' | 'locked' | 'opened'
-                            godMode={godMode}
-                            onClick={() => handleOpen(envelope)}
-                            onHesitate={() => handleHesitation(envelope.id)}
-                        />
-                    ))}
+                    <Suspense fallback={[...Array(6)].map((_, i) => <EnvelopeSkeleton key={i} />)}>
+                        {deck.map((envelope) => (
+                            <PremiumEnvelope
+                                key={envelope.id}
+                                layoutId={`envelope-${envelope.id}`} // Shared ID
+                                amount={envelope.amount || 0} // Could be hidden
+                                isTrap={envelope.isTrap || false}
+                                opened={envelope.status === 'opened'}
+                                status={envelope.status} // 'available' | 'locked' | 'opened'
+                                godMode={godMode}
+                                onClick={() => handleOpen(envelope)}
+                                onHesitate={() => handleHesitation(envelope.id)}
+                            />
+                        ))}
+                    </Suspense>
                 </AnimatePresence>
             </div>
 
@@ -577,15 +587,17 @@ const Gameplay = () => {
 
                         {/* Hidden Voucher Template */}
                         <div className="fixed top-0 left-[-9999px]">
-                            <VoucherTemplate
-                                ref={voucherRef}
-                                name={name}
-                                amount={currentResult?.amount || 0}
-                                wish={currentResult?.wish || ''}
-                                karmaScore={currentResult?.karmaScore || auraScore || 50}
-                                roomId={roomId || ''}
-                                date={new Date().toLocaleDateString('vi-VN')}
-                            />
+                            <Suspense fallback={<LoadingSkeleton className="w-[800px] h-[400px]" />}>
+                                <VoucherTemplate
+                                    ref={voucherRef}
+                                    name={name}
+                                    amount={currentResult?.amount || 0}
+                                    wish={currentResult?.wish || ''}
+                                    karmaScore={currentResult?.karmaScore || auraScore || 50}
+                                    roomId={roomId || ''}
+                                    date={new Date().toLocaleDateString('vi-VN')}
+                                />
+                            </Suspense>
                         </div>
                     </div>
                 )}
@@ -638,16 +650,18 @@ const Gameplay = () => {
             {/* AURA SCAN MODAL */}
             <AnimatePresence>
                 {showScan && (
-                    <AuraScan
-                        onClose={() => setShowScan(false)}
-                        onComplete={(score) => {
-                            setAuraScore(score);
-                            setHasScanned(true);
-                            setShowScan(false);
-                            if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
-                            play('win');
-                        }}
-                    />
+                    <Suspense fallback={<div className="fixed inset-0 z-50 bg-black flex items-center justify-center text-white">Loading Camera...</div>}>
+                        <AuraScan
+                            onClose={() => setShowScan(false)}
+                            onComplete={(score) => {
+                                setAuraScore(score);
+                                setHasScanned(true);
+                                setShowScan(false);
+                                vibrate([50, 50, 50]);
+                                play('win');
+                            }}
+                        />
+                    </Suspense>
                 )}
             </AnimatePresence>
 

@@ -634,5 +634,49 @@ export const api = {
             return { success: true };
         }
         return { success: false };
+    },
+
+    // TRAP MANAGEMENT
+    async getTraps(roomId: string) {
+        const rooms = loadDB();
+        const room = findRoom(rooms, roomId);
+        if (!room) return [];
+        return room.inventory.filter(i => i.type === 'trap').map(i => i.value as TrapItem);
+    },
+
+    async addTrap(roomId: string, trapContent: string) {
+        const rooms = loadDB();
+        const room = findRoom(rooms, roomId);
+        if (!room) return { success: false };
+
+        const newTrap: TrapItem = {
+            id: 'trap-' + Date.now(),
+            type: 'action', // Default type
+            content: trapContent,
+            intensity: 3
+        };
+
+        room.inventory.push({ type: 'trap', value: newTrap });
+
+        // Auto-increase trap probability
+        if (!room.weights) room.weights = {};
+        room.weights['TRAP'] = (room.weights['TRAP'] || 20) + 100; // Major boost
+
+        saveDB(rooms);
+        return { success: true, trap: newTrap };
+    },
+
+    async removeTrap(roomId: string, trapId: string) {
+        const rooms = loadDB();
+        const room = findRoom(rooms, roomId);
+        if (!room) return { success: false };
+
+        const index = room.inventory.findIndex(i => i.type === 'trap' && (i.value as TrapItem).id === trapId);
+        if (index !== -1) {
+            room.inventory.splice(index, 1);
+            saveDB(rooms);
+            return { success: true };
+        }
+        return { success: false, error: 'Trap not found' };
     }
 };

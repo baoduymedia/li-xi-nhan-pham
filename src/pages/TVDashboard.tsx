@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { QRCodeSVG } from 'qrcode.react';
 import { Trophy, Activity, Users, Star } from 'lucide-react';
 import { api } from '../lib/api';
-import BrandCarousel from '../components/tv/BrandCarousel';
-import EventEffects from '../components/tv/EventEffects';
+
+const BrandCarousel = lazy(() => import('../components/tv/BrandCarousel'));
+const EventEffects = lazy(() => import('../components/tv/EventEffects'));
 
 const TVDashboard = () => {
     const { roomId } = useParams();
@@ -51,7 +52,9 @@ const TVDashboard = () => {
 
     return (
         <div className="min-h-screen bg-black text-white overflow-hidden font-sans flex flex-col">
-            <EventEffects roomId={roomId || ''} />
+            <Suspense fallback={null}>
+                <EventEffects roomId={roomId || ''} />
+            </Suspense>
 
             {/* Top Bar */}
             <div className="h-24 bg-gradient-to-r from-red-900 to-black border-b border-yellow-500/30 flex items-center justify-between px-10 relative z-10">
@@ -158,8 +161,10 @@ const TVDashboard = () => {
                 {/* Right: QR Code & Brand Carousel (4 cols) */}
                 <div className="col-span-4 flex flex-col gap-6 z-10">
                     {/* Brand Carousel Section */}
-                    <div className="h-1/2 bg-white/5 rounded-3xl border border-white/10">
-                        <BrandCarousel />
+                    <div className="h-1/2 bg-white/5 rounded-3xl border border-white/10 relative">
+                        <Suspense fallback={<div className="absolute inset-0 flex items-center justify-center text-white/20">Loading Sponsors...</div>}>
+                            <BrandCarousel />
+                        </Suspense>
                     </div>
 
                     <div className="bg-white p-6 rounded-3xl flex flex-col items-center justify-center text-black flex-1 shadow-[0_0_50px_rgba(255,255,255,0.1)]">

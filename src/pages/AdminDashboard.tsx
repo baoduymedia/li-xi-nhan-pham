@@ -19,8 +19,8 @@ const AdminDashboard = () => {
     });
 
     // Gift Injection State
-    const [giftTargetId, setGiftTargetId] = useState('');
     const [giftContent, setGiftContent] = useState('');
+    const [activeTraps, setActiveTraps] = useState<any[]>([]);
 
     // Challenge State
     const [challengeContent, setChallengeContent] = useState('');
@@ -29,10 +29,42 @@ const AdminDashboard = () => {
     useEffect(() => {
         if (authenticated) {
             fetchGlobalData();
-            const interval = setInterval(fetchGlobalData, 3000);
+            const interval = setInterval(() => {
+                fetchGlobalData();
+                fetchTraps();
+            }, 3000);
             return () => clearInterval(interval);
         }
     }, [authenticated]);
+
+    const fetchTraps = async () => {
+        const activeRoom = rooms.find(r => r.status === 'playing');
+        if (activeRoom) {
+            const traps = await api.getTraps?.(activeRoom.id);
+            if (traps) setActiveTraps(traps);
+        }
+    };
+
+    const handleAddTrap = async () => {
+        if (!giftContent) return;
+        const activeRoom = rooms.find(r => r.status === 'playing');
+        if (activeRoom) {
+            await api.addTrap?.(activeRoom.id, giftContent);
+            setGiftContent('');
+            fetchTraps();
+        } else {
+            alert('Cần có phòng đang chơi để thêm bẫy!');
+        }
+    };
+
+    const handleRemoveTrap = async (id: string) => {
+        if (!confirm('Xóa bẫy này?')) return;
+        const activeRoom = rooms.find(r => r.status === 'playing');
+        if (activeRoom) {
+            await api.removeTrap?.(activeRoom.id, id);
+            fetchTraps();
+        }
+    };
 
     const fetchGlobalData = async () => {
         // Mock global stats - in real app, this would aggregate from all rooms
@@ -263,41 +295,50 @@ const AdminDashboard = () => {
             {/* Gift Injection (Live Swap Extended) */}
             <Card className="border-pink-500/30">
                 <div className="flex items-center gap-2 mb-4 text-xl font-bold text-pink-300">
-                    <span className="text-2xl">🎁</span> Gift Injection & Trap Setting
+                    <span className="text-2xl">🎁</span> Quản Lý Bẫy & Quà
                 </div>
                 <div className="space-y-4">
+                    {/* Add New Trap */}
                     <div className="flex gap-2">
                         <input
-                            type="number"
-                            placeholder="Envelope ID (Optional)"
-                            value={giftTargetId}
-                            onChange={(e) => setGiftTargetId(e.target.value)}
-                            className="w-24 px-3 py-2 bg-white/10 rounded text-white"
-                        />
-                        <input
                             type="text"
-                            placeholder="Content (e.g. 'Voucher 50%', 'Trap: Dance')"
+                            placeholder="Nội dung bẫy (VD: Nhảy lò cò, Múa bụng...)"
                             value={giftContent}
                             onChange={(e) => setGiftContent(e.target.value)}
                             className="flex-1 px-3 py-2 bg-white/10 rounded text-white"
+                            onKeyPress={(e) => e.key === 'Enter' && handleAddTrap()}
                         />
                         <button
-                            onClick={async () => {
-                                if (!giftContent) return;
-                                // Apply to all active rooms for demo simplicity, or select room
-                                const targetRoom = rooms.find(r => r.status === 'playing');
-                                if (targetRoom) {
-                                    await api.liveSwapTrap(targetRoom.id, giftTargetId ? parseInt(giftTargetId) : null, giftContent);
-                                    alert(`Injected into Room ${targetRoom.code}`);
-                                    setGiftContent('');
-                                } else {
-                                    alert("No active room found");
-                                }
-                            }}
-                            className="px-4 py-2 bg-pink-600 hover:bg-pink-500 rounded font-bold text-white"
+                            onClick={handleAddTrap}
+                            className="px-4 py-2 bg-pink-600 hover:bg-pink-500 rounded font-bold text-white whitespace-nowrap"
                         >
-                            Inject
+                            Thêm Bẫy
                         </button>
+                    </div>
+
+                    {/* Active Traps List */}
+                    <div className="bg-black/20 rounded-lg p-4 border border-white/5 max-h-60 overflow-y-auto">
+                        <h3 className="text-white/60 text-sm uppercase mb-3 flex justify-between">
+                            <span>Bẫy Đang Có ({activeTraps.length})</span>
+                            <button onClick={fetchTraps} className="text-pink-400 hover:text-pink-300 text-xs">Làm mới</button>
+                        </h3>
+                        <div className="space-y-2">
+                            {activeTraps.map((trap: any) => (
+                                <div key={trap.id} className="flex justify-between items-center bg-white/5 p-2 rounded hover:bg-white/10 transition-colors">
+                                    <span className="text-white text-sm">{trap.content}</span>
+                                    <button
+                                        onClick={() => handleRemoveTrap(trap.id)}
+                                        className="text-red-400 hover:text-red-300 hover:bg-red-900/30 p-1 rounded"
+                                        title="Xóa bẫy này"
+                                    >
+                                        <X size={16} />
+                                    </button>
+                                </div>
+                            ))}
+                            {activeTraps.length === 0 && (
+                                <p className="text-white/20 text-center text-sm italic py-2">Chưa có bẫy nào trong kho</p>
+                            )}
+                        </div>
                     </div>
                 </div>
             </Card>
